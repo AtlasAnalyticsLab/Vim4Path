@@ -1,0 +1,10 @@
+output/
+data/
+*ndpi
+*svs
+*csv
+*jpg
+*h5
+*png
+.ipynb_checkpoints/
+.idea/

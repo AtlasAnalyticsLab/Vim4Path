@@ -1,0 +1,2 @@
+python create_patches_fp.py --source /home/atlas-gp/Transfer_CC/10930_chx_digestive_benigne/ --save_dir output/digestive_benign/extracted_mag10x_patch4096_fp --patch_size 4096 --step_size 4096 --patch_level 2 --seg --patch --stitch
+python create_patches_fp.py --source /home/atlas-gp/Transfer_CC/10931_chx_digestive_maligne/ --save_dir output/digestive_malign/extracted_mag10x_patch4096_fp --patch_size 4096 --step_size 4096 --patch_level 2 --seg --patch --stitch

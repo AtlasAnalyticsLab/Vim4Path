@@ -1,0 +1,5 @@
+# ninja log v5
+2	3899	1708464862707292896	/home/a_n29343/CHUM/VIM4Path/dino/causal-conv1d/build/temp.linux-x86_64-cpython-310/csrc/causal_conv1d_update.o	7773c9b1419bbd99
+2	8863	1708464867647297838	/home/a_n29343/CHUM/VIM4Path/dino/causal-conv1d/build/temp.linux-x86_64-cpython-310/csrc/causal_conv1d_fwd.o	c0bf9e706b098ad2
+1	23753	1708464882443312635	/home/a_n29343/CHUM/VIM4Path/dino/causal-conv1d/build/temp.linux-x86_64-cpython-310/csrc/causal_conv1d_bwd.o	7cd1b8307e16c275
+1	28015	1708464886819317010	/home/a_n29343/CHUM/VIM4Path/dino/causal-conv1d/build/temp.linux-x86_64-cpython-310/csrc/causal_conv1d.o	932ee24097499248

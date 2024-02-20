@@ -1,2 +1,0 @@
-python create_patches.py --source /home/atlas-gp/Transfer_CC/10930_chx_digestive_benigne/ --save_dir output_full/digestive_benign/extracted_mag10x_patch256_fp --patch_size 256 --step_size 256 --patch_level 2 --seg --patch --stitch
-python create_patches.py --source /home/atlas-gp/Transfer_CC/10931_chx_digestive_maligne/ --save_dir output_full/digestive_malign/extracted_mag10x_patch256_fp --patch_size 256 --step_size 256 --patch_level 2 --seg --patch --stitch

@@ -11,8 +11,12 @@ data/
 *txt
 *out
 *pyc
+*out
 checkpoints/
 .ipynb_checkpoints/
 __pycache__/
 .idea/
 HIPT/
+datasets/
+Vim
+.github

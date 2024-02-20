@@ -45,10 +45,10 @@ raw_data_paths = {
     'digestive_malign': "/home/atlas-gp/Transfer_CC/10931_chx_digestive_maligne"
 }
 
-output_folder = 'output_small'
-input_folder = 'output'
+output_folder = '/home/a_n29343/CHUM/VIM4Path/datasets/CHUM/output_vim/'
+input_folder = '/home/a_n29343/CHUM/VIM4Path/datasets/CHUM/output'
 class_names = os.listdir(input_folder)
-hipt_patch_folder = 'extracted_mag10x_patch256_fp'
+hipt_patch_folder = 'extracted_mag5x_patch1280_fp'
 
 def process_patch(patch_path):
 
@@ -76,7 +76,7 @@ def main():
     for class_name in class_names:
         os.makedirs(os.path.join(output_folder, class_name), exist_ok=True)
         print(f"Processing for Class {class_name}")
-        patch_paths = sorted(glob.glob(os.path.join(input_folder, class_name, hipt_patch_folder, "patches", "*h5")))[:200]
+        patch_paths = sorted(glob.glob(os.path.join(input_folder, class_name, hipt_patch_folder, "patches", "*h5")))#[:200]
         total = len(patch_paths)
         progress_bar = tqdm(total=total)
         with Pool(min(cpu_count(), 8)) as p:

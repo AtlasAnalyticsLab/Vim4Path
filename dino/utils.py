@@ -31,7 +31,7 @@ import torch
 from torch import nn
 import torch.distributed as dist
 from PIL import ImageFilter, ImageOps
-
+import wandb
 
 class GaussianBlur(object):
     """
@@ -338,9 +338,12 @@ class MetricLogger(object):
             )
         return self.delimiter.join(loss_str)
 
-    def synchronize_between_processes(self):
-        for meter in self.meters.values():
+    def synchronize_between_processes(self, args):
+
+        for meter_name, meter in self.meters.items():
             meter.synchronize_between_processes()
+        if not args.disable_wandb and args.gpu==0:
+            wandb.log({meter_name: meter.value for meter_name, meter in self.meters.items()})
 
     def add_meter(self, name, meter):
         self.meters[name] = meter

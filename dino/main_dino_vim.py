@@ -34,6 +34,8 @@ import utils
 import vision_transformer as vits
 from vision_transformer import DINOHead
 from vim.models_mamba import VisionMamba
+import wandb
+
 torchvision_archs = sorted(name for name in torchvision_models.__dict__
     if name.islower() and not name.startswith("__")
     and callable(torchvision_models.__dict__[name]))
@@ -105,9 +107,9 @@ def get_args_parser():
     parser.add_argument('--drop_path_rate', type=float, default=0.1, help="stochastic depth rate")
 
 
-    parser.add_argument('--image_size', default=1280, type=int, help='Image Size of global views.')
-    parser.add_argument('--image_size_down', default=560, type=int, help='Image Size of local views.')
-
+    parser.add_argument('--image_size', default=512, type=int, help='Image Size of global views.')
+    parser.add_argument('--image_size_down', default=224, type=int, help='Image Size of local views.')
+    parser.add_argument('--disable_wandb', action='store_true', help='Disable Weights & Biases logging. Enabled by default.')
 
     # Multi-crop parameters
     parser.add_argument('--global_crops_scale', type=float, nargs='+', default=(0.4, 1.),
@@ -169,8 +171,8 @@ def train_dino(args):
         #     drop_path_rate=args.drop_path_rate,  # stochastic depth
         # )
         # teacher = vits.__dict__[args.arch](patch_size=args.patch_size)
-        student = VisionMamba(img_size=args.image_size, patch_size=16, embed_dim=192, depth=12, rms_norm=True, residual_in_fp32=True, fused_add_norm=True, final_pool_type='mean', if_abs_pos_embed=False, if_rope=False, if_rope_residual=False, bimamba_type="v2", if_cls_token=True, if_devide_out=True, use_middle_cls_token=True)
-        teacher = VisionMamba(img_size=args.image_size, patch_size=16, embed_dim=192, depth=12, rms_norm=True, residual_in_fp32=True, fused_add_norm=True, final_pool_type='mean', if_abs_pos_embed=False, if_rope=False, if_rope_residual=False, bimamba_type="v2", if_cls_token=True, if_devide_out=True, use_middle_cls_token=True)
+        student = VisionMamba(img_size=args.image_size, patch_size=16, embed_dim=192, depth=12, rms_norm=True, residual_in_fp32=True, fused_add_norm=True, final_pool_type='mean', if_abs_pos_embed=True, if_rope=False, if_rope_residual=False, bimamba_type="v2", if_cls_token=True, if_devide_out=True, use_middle_cls_token=True)
+        teacher = VisionMamba(img_size=args.image_size, patch_size=16, embed_dim=192, depth=12, rms_norm=True, residual_in_fp32=True, fused_add_norm=True, final_pool_type='mean', if_abs_pos_embed=True, if_rope=False, if_rope_residual=False, bimamba_type="v2", if_cls_token=True, if_devide_out=True, use_middle_cls_token=True)
     
         embed_dim = student.embed_dim
         print('EMBEDEDD ', embed_dim)
@@ -349,8 +351,9 @@ def train_one_epoch(student, teacher, teacher_without_ddp, dino_loss, data_loade
         metric_logger.update(loss=loss.item())
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
         metric_logger.update(wd=optimizer.param_groups[0]["weight_decay"])
+        break
     # gather the stats from all processes
-    metric_logger.synchronize_between_processes()
+    metric_logger.synchronize_between_processes(args)
     print("Averaged stats:", metric_logger)
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
@@ -463,4 +466,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser('DINO', parents=[get_args_parser()])
     args = parser.parse_args()
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
+    
+    if not args.disable_wandb:
+        wandb.init(
+            # set the wandb project where this run will be logged
+            project="Vim4Path",
+            # track hyperparameters and run metadata
+            config=args
+        )
     train_dino(args)

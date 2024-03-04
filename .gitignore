@@ -12,6 +12,9 @@ data/
 *out
 *pyc
 *out
+*so
+
+dino/causal-conv1d/build/
 checkpoints/
 .ipynb_checkpoints/
 __pycache__/
@@ -20,3 +23,4 @@ HIPT/
 datasets/
 Vim
 .github
+wandb/

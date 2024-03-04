@@ -104,6 +104,11 @@ def get_args_parser():
         choices=['adamw', 'sgd', 'lars'], help="""Type of optimizer. We recommend using adamw with ViTs.""")
     parser.add_argument('--drop_path_rate', type=float, default=0.1, help="stochastic depth rate")
 
+
+    parser.add_argument('--image_size', default=1280, type=int, help='Image Size of global views.')
+    parser.add_argument('--image_size_down', default=560, type=int, help='Image Size of local views.')
+
+
     # Multi-crop parameters
     parser.add_argument('--global_crops_scale', type=float, nargs='+', default=(0.4, 1.),
         help="""Scale range of the cropped image before resizing, relatively to the origin image.
@@ -129,8 +134,7 @@ def get_args_parser():
     # parser.add_argument("--gpu", default=0, type=int, help="GPU rank")
     return parser
 
-IMAGE_SIZE = 512
-IMAGE_SIZE_DOWN = int(IMAGE_SIZE/2.333333333333333)
+
 def train_dino(args):
     utils.init_distributed_mode(args)
     utils.fix_random_seeds(args.seed)
@@ -165,8 +169,8 @@ def train_dino(args):
         #     drop_path_rate=args.drop_path_rate,  # stochastic depth
         # )
         # teacher = vits.__dict__[args.arch](patch_size=args.patch_size)
-        student = VisionMamba(img_size=IMAGE_SIZE, patch_size=16, embed_dim=192, depth=12, rms_norm=True, residual_in_fp32=True, fused_add_norm=True, final_pool_type='mean', if_abs_pos_embed=False, if_rope=False, if_rope_residual=False, bimamba_type="v2", if_cls_token=True, if_devide_out=True, use_middle_cls_token=True)
-        teacher = VisionMamba(img_size=IMAGE_SIZE, patch_size=16, embed_dim=192, depth=12, rms_norm=True, residual_in_fp32=True, fused_add_norm=True, final_pool_type='mean', if_abs_pos_embed=False, if_rope=False, if_rope_residual=False, bimamba_type="v2", if_cls_token=True, if_devide_out=True, use_middle_cls_token=True)
+        student = VisionMamba(img_size=args.image_size, patch_size=16, embed_dim=192, depth=12, rms_norm=True, residual_in_fp32=True, fused_add_norm=True, final_pool_type='mean', if_abs_pos_embed=False, if_rope=False, if_rope_residual=False, bimamba_type="v2", if_cls_token=True, if_devide_out=True, use_middle_cls_token=True)
+        teacher = VisionMamba(img_size=args.image_size, patch_size=16, embed_dim=192, depth=12, rms_norm=True, residual_in_fp32=True, fused_add_norm=True, final_pool_type='mean', if_abs_pos_embed=False, if_rope=False, if_rope_residual=False, bimamba_type="v2", if_cls_token=True, if_devide_out=True, use_middle_cls_token=True)
     
         embed_dim = student.embed_dim
         print('EMBEDEDD ', embed_dim)
@@ -424,14 +428,14 @@ class DataAugmentationDINO(object):
 
         # first global crop
         self.global_transfo1 = transforms.Compose([
-            transforms.RandomResizedCrop(IMAGE_SIZE, scale=global_crops_scale, interpolation=Image.BICUBIC),
+            transforms.RandomResizedCrop(args.image_size, scale=global_crops_scale, interpolation=Image.BICUBIC),
             flip_and_color_jitter,
             utils.GaussianBlur(1.0),
             normalize,
         ])
         # second global crop
         self.global_transfo2 = transforms.Compose([
-            transforms.RandomResizedCrop(IMAGE_SIZE, scale=global_crops_scale, interpolation=Image.BICUBIC),
+            transforms.RandomResizedCrop(args.image_size, scale=global_crops_scale, interpolation=Image.BICUBIC),
             flip_and_color_jitter,
             utils.GaussianBlur(0.1),
             utils.Solarization(0.2),
@@ -440,7 +444,7 @@ class DataAugmentationDINO(object):
         # transformation for the local small crops
         self.local_crops_number = local_crops_number
         self.local_transfo = transforms.Compose([
-            transforms.RandomResizedCrop(IMAGE_SIZE_DOWN, scale=local_crops_scale, interpolation=Image.BICUBIC),
+            transforms.RandomResizedCrop(args.image_size_down, scale=local_crops_scale, interpolation=Image.BICUBIC),
             flip_and_color_jitter,
             utils.GaussianBlur(p=0.5),
             normalize,

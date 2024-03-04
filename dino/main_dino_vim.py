@@ -140,6 +140,15 @@ def get_args_parser():
 def train_dino(args):
     utils.init_distributed_mode(args)
     utils.fix_random_seeds(args.seed)
+        
+    if not args.disable_wandb and args.gpu==0:
+        wandb.init(
+            # set the wandb project where this run will be logged
+            project="Vim4Path",
+            # track hyperparameters and run metadata
+            config=args
+        )
+
     print("git:\n  {}\n".format(utils.get_sha()))
     print("\n".join("%s: %s" % (k, str(v)) for k, v in sorted(dict(vars(args)).items())))
     cudnn.benchmark = True
@@ -465,12 +474,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser('DINO', parents=[get_args_parser()])
     args = parser.parse_args()
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
-    
-    if not args.disable_wandb:
-        wandb.init(
-            # set the wandb project where this run will be logged
-            project="Vim4Path",
-            # track hyperparameters and run metadata
-            config=args
-        )
+
     train_dino(args)

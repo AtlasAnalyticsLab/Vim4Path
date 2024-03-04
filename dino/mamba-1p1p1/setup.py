@@ -271,6 +271,5 @@ setup(
         "einops",
         "triton",
         "transformers",
-        "causal_conv1d>=1.1.0",
     ],
 )

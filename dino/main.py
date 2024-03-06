@@ -47,8 +47,7 @@ def get_args_parser():
 
     # Model parameters
     parser.add_argument('--arch', default='vim-s', type=str,
-        choices=['vim-s', 'vit-s'] \
-                + torchvision_archs + torch.hub.list("facebookresearch/xcit:main"),
+        choices=['vim-s', 'vit-s', 'vim-t', 'vit-t'], 
         help="""Name of architecture to train. For quick experiments with ViTs,
         we recommend using vit_tiny or vit_small.""")
     parser.add_argument('--patch_size', default=16, type=int, help="""Size in pixels
@@ -177,6 +176,7 @@ def train_dino(args):
     # ============ building student and teacher networks ... ============
     if args.arch in configurations:
         config = configurations[args.arch]
+        config['img_size'] = args.image_size
         config['patch_size'] = args.patch_size
         config['num_classes'] = args.num_classes
         if not args.disable_wandb and args.gpu==0:
@@ -186,10 +186,10 @@ def train_dino(args):
             config['norm_layer'] = partial(nn.LayerNorm, eps=config['eps'])
         teacher_config = config.copy()
         teacher_config['drop_path_rate'] = 0  
-        if args.arch == 'vim-s':
-            student = VisionMamba(**config)
-            teacher = VisionMamba(**teacher_config)  
-        elif args.arch == 'vit-s':
+        if args.arch.startswith('vim'):
+            student = VisionMamba(return_features=True, **config)
+            teacher = VisionMamba(return_features=True, **teacher_config)  
+        elif args.arch.startswith('vit'):
             student = VisionTransformer(**config)
             teacher = VisionTransformer(**teacher_config)
         embed_dim = student.embed_dim

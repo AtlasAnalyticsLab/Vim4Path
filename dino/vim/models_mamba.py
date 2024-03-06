@@ -192,7 +192,7 @@ class VisionMamba(nn.Module):
                  depth=24, 
                  embed_dim=192, 
                  channels=3, 
-                 num_classes=1000,
+                 num_classes=2,
                  ssm_cfg=None, 
                  drop_rate=0.,
                  drop_path_rate=0.1,
@@ -698,7 +698,7 @@ class VisionMamba(nn.Module):
                  depth=24, 
                  embed_dim=192, 
                  channels=3, 
-                 num_classes=1000,
+                 num_classes=2,
                  ssm_cfg=None, 
                  drop_rate=0.,
                  drop_path_rate=0.1,
@@ -724,6 +724,7 @@ class VisionMamba(nn.Module):
                  init_layer_scale=None,
                  use_double_cls_token=False,
                  use_middle_cls_token=False,
+                 return_features=False,
                  **kwargs):
         factory_kwargs = {"device": device, "dtype": dtype}
         # add factory_kwargs into kwargs
@@ -741,6 +742,7 @@ class VisionMamba(nn.Module):
         self.use_double_cls_token = use_double_cls_token
         self.use_middle_cls_token = use_middle_cls_token
         self.num_tokens = 1 if if_cls_token else 0
+        self.return_features =  return_features
 
         # pretrain parameters
         self.num_classes = num_classes
@@ -1034,9 +1036,9 @@ class VisionMamba(nn.Module):
         else:
             raise NotImplementedError
 
-    def forward(self, x, return_features=False, inference_params=None, if_random_cls_token_position=False, if_random_token_rank=False):
+    def forward(self, x, inference_params=None, if_random_cls_token_position=False, if_random_token_rank=False):
         x = self.forward_features(x, inference_params, if_random_cls_token_position=if_random_cls_token_position, if_random_token_rank=if_random_token_rank)
-        if return_features:
+        if self.return_features:
             return x
         x = self.head(x)
         if self.final_pool_type == 'max':

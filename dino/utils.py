@@ -78,6 +78,13 @@ def load_pretrained_weights(model, pretrained_weights, checkpoint_key, model_nam
         state_dict = {k.replace("module.", ""): v for k, v in state_dict.items()}
         # remove `backbone.` prefix induced by multicrop wrapper
         state_dict = {k.replace("backbone.", ""): v for k, v in state_dict.items()}
+
+        # Adjusting the state dict to skip loading for layers that have a size mismatch
+        for name, param in model.named_parameters():
+            if name not in state_dict or state_dict[name].size() != param.size():
+                print(f"Skipping loading parameter {name} due to size mismatch or it not being present in the checkpoint.")
+                state_dict.pop(name, None)  # Remove incompatible parameters
+
         msg = model.load_state_dict(state_dict, strict=False)
         print('Pretrained weights found at {} and loaded with msg: {}'.format(pretrained_weights, msg))
     else:
@@ -620,7 +627,7 @@ class MultiCropWrapper(nn.Module):
         )[1], 0)
         start_idx, output = 0, torch.empty(0).to(x[0].device)
         for end_idx in idx_crops:
-            _out = self.backbone.forward_features(torch.cat(x[start_idx: end_idx]))
+            _out = self.backbone.forward(torch.cat(x[start_idx: end_idx]))
             # The output is a tuple with XCiT model. See:
             # https://github.com/facebookresearch/xcit/blob/master/xcit.py#L404-L405
             if isinstance(_out, tuple):

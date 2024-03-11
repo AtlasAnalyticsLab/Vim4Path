@@ -31,7 +31,7 @@ from config import configurations
 from vision_transformer import VisionTransformer
 from vim.models_mamba import VisionMamba
 from functools import partial
-def eval_linear(args):
+def eval_finetune(args):
     utils.init_distributed_mode(args)
     if not args.disable_wandb and args.gpu==0:
         wandb.init(
@@ -69,7 +69,6 @@ def eval_linear(args):
         print(f"Unknown architecture: {args.arch}")
         
     model.cuda()
-    model.eval()
     # load weights to evaluate
     utils.load_pretrained_weights(model, args.pretrained_weights, args.checkpoint_key, args.arch, args.patch_size)
     print(f"Model {args.arch} built.")
@@ -118,8 +117,8 @@ def eval_linear(args):
 
     # set optimizer
     optimizer = torch.optim.SGD(
-        linear_classifier.parameters(),   
-        # list(linear_classifier.parameters()) + list(model.parameters()),
+        # linear_classifier.parameters(),   
+        list(linear_classifier.parameters()) + list(model.parameters()),
         args.lr * (args.batch_size_per_gpu * utils.get_world_size()) / 256., # linear scaling rule
         momentum=0.9,
         weight_decay=0, # we do not apply weight decay
@@ -169,7 +168,7 @@ def eval_linear(args):
 
 
 def train(model, linear_classifier, optimizer, loader, epoch, n, avgpool):
-    # model.train()
+    model.train()
     linear_classifier.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
@@ -180,15 +179,15 @@ def train(model, linear_classifier, optimizer, loader, epoch, n, avgpool):
         target = target.cuda(non_blocking=True)
 
         # forward
-        with torch.no_grad():
-            if "vit" in args.arch:
-                intermediate_output = model.get_intermediate_layers(inp, n)
-                output = torch.cat([x[:, 0] for x in intermediate_output], dim=-1)
-                if avgpool:
-                    output = torch.cat((output.unsqueeze(-1), torch.mean(intermediate_output[-1][:, 1:], dim=1).unsqueeze(-1)), dim=-1)
-                    output = output.reshape(output.shape[0], -1)
-            else:
-                output = model(inp)
+        # with torch.no_grad():
+        if "vit" in args.arch:
+            intermediate_output = model.get_intermediate_layers(inp, n)
+            output = torch.cat([x[:, 0] for x in intermediate_output], dim=-1)
+            if avgpool:
+                output = torch.cat((output.unsqueeze(-1), torch.mean(intermediate_output[-1][:, 1:], dim=1).unsqueeze(-1)), dim=-1)
+                output = output.reshape(output.shape[0], -1)
+        else:
+            output = model(inp)
         output = linear_classifier(output)
 
         # compute cross entropy loss
@@ -213,7 +212,7 @@ def train(model, linear_classifier, optimizer, loader, epoch, n, avgpool):
 
 @torch.no_grad()
 def validate_network(val_loader, model, linear_classifier, n, avgpool):
-    # model.eval()
+    model.eval()
     linear_classifier.eval()
     metric_logger = utils.MetricLogger(delimiter="  ")
     header = 'Test:'
@@ -303,4 +302,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     os.makedirs(args.output_dir, exist_ok=True)
-    eval_linear(args)
+    eval_finetune(args)

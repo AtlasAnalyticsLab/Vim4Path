@@ -39,6 +39,26 @@ configurations = {
         "use_middle_cls_token": True,
         "bimamba_type": "v2"
     },
+    "vim-s2": {
+        "img_size": 512,
+        "patch_size": 16,
+        "stride": 16,
+        "embed_dim": 384,
+        "depth": 24,
+        "rms_norm": True,
+        "attn_drop_rate": 0.0,
+        "drop_path_rate": 0.1,
+        "residual_in_fp32": True,
+        "fused_add_norm": True,
+        "final_pool_type": "mean",
+        "if_abs_pos_embed": True,
+        "if_rope": False,
+        "if_rope_residual": False,
+        "if_cls_token": True,
+        "if_devide_out": True,
+        "use_middle_cls_token": True,
+        "bimamba_type": "v2"
+    },
     "vit-t": {
         "img_size": 512,
         "patch_size": 16,

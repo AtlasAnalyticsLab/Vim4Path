@@ -1,0 +1,10 @@
+**/.DS_Store
+__pycache__/
+splits/
+results/
+presets/
+heatmaps/
+eval_results/
+dataset_csv/
+.ipynb_checkpoints/
+docs/

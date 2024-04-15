@@ -59,7 +59,7 @@ def seg_and_patch(source, save_dir, patch_save_dir, mask_save_dir, stitch_save_d
 
 
 	slides = sorted(os.listdir(source))
-	slides = [file_name for file_name in slides if file_name.endswith('ndpi')]
+	slides = [file_name for file_name in slides if file_name.endswith('tif')]
 	slides = [slide for slide in slides if os.path.isfile(os.path.join(source, slide))]
 	if process_list is None:
 		df = initialize_df(slides, seg_params, filter_params, vis_params, patch_params)

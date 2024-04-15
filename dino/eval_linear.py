@@ -24,12 +24,12 @@ from torchvision import datasets
 from torchvision import transforms as pth_transforms
 from torchvision import models as torchvision_models
 
-import utils
-import vision_transformer as vits
+from . import utils
+from .config import configurations
+from .vision_transformer import VisionTransformer
+from .vim.models_mamba import VisionMamba
+
 import wandb
-from config import configurations  
-from vision_transformer import VisionTransformer
-from vim.models_mamba import VisionMamba
 from functools import partial
 def eval_linear(args):
     utils.init_distributed_mode(args)

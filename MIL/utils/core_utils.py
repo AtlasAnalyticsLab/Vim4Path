@@ -6,7 +6,7 @@ import os
 from models.model_mil import MIL_fc, MIL_fc_mc
 from models.model_clam import CLAM_MB, CLAM_SB
 from sklearn.preprocessing import label_binarize
-from sklearn.metrics import roc_auc_score, roc_curve
+from sklearn.metrics import roc_auc_score, roc_curve, f1_score
 from sklearn.metrics import auc as calc_auc
 import pandas as pd
 
@@ -218,10 +218,10 @@ def train(datasets, cur, args, embedding_dim):
     else:
         torch.save(model.state_dict(), os.path.join(args.results_dir, "s_{}_checkpoint.pt".format(cur)))
 
-    _, val_error, val_auc, _ = summary(model, val_loader, args.n_classes)
+    _, val_error, val_auc, _, val_f1 = summary(model, val_loader, args.n_classes)
     print('Val error: {:.4f}, ROC AUC: {:.4f}'.format(val_error, val_auc))
 
-    results_dict, test_error, test_auc, acc_logger = summary(model, test_loader, args.n_classes)
+    results_dict, test_error, test_auc, acc_logger, test_f1 = summary(model, test_loader, args.n_classes)
     print('Test error: {:.4f}, ROC AUC: {:.4f}'.format(test_error, test_auc))
 
     for i in range(args.n_classes):
@@ -237,7 +237,7 @@ def train(datasets, cur, args, embedding_dim):
         writer.add_scalar('final/test_error', test_error, 0)
         writer.add_scalar('final/test_auc', test_auc, 0)
         writer.close()
-    return results_dict, test_auc, val_auc, 1 - test_error, 1 - val_error
+    return results_dict, test_auc, val_auc, 1 - test_error, 1 - val_error, test_f1, val_f1
 
 
 def train_loop_clam(epoch, model, loader, optimizer, n_classes, bag_weight, writer=None, loss_fn=None):
@@ -521,6 +521,7 @@ def summary(model, loader, n_classes):
 
     slide_ids = loader.dataset.slide_data['slide_id']
     patient_results = {}
+    all_predictions = []  # For calculating F1 score
 
     for batch_idx, (data, label) in enumerate(loader):
         data, label = data.to(device), label.to(device)
@@ -532,12 +533,21 @@ def summary(model, loader, n_classes):
         probs = Y_prob.cpu().numpy()
         all_probs[batch_idx] = probs
         all_labels[batch_idx] = label.item()
+        all_predictions.append(Y_hat.cpu())  # Collecting predictions for F1 score
 
         patient_results.update({slide_id: {'slide_id': np.array(slide_id), 'prob': probs, 'label': label.item()}})
         error = calculate_error(Y_hat, label)
         test_error += error
 
     test_error /= len(loader)
+
+    # F1 calculation
+    all_predictions = torch.cat(all_predictions).numpy()  # Convert list of tensors to a single numpy array
+    # F1 score calculation
+    if n_classes == 2:
+        f1 = f1_score(all_labels, all_predictions, average='binary')
+    else:
+        f1 = f1_score(all_labels, all_predictions, average='macro')
 
     if n_classes == 2:
         auc = roc_auc_score(all_labels, all_probs[:, 1])
@@ -554,4 +564,4 @@ def summary(model, loader, n_classes):
 
         auc = np.nanmean(np.array(aucs))
 
-    return patient_results, test_error, auc, acc_logger
+    return patient_results, test_error, auc, acc_logger, f1

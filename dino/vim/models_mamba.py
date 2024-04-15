@@ -873,8 +873,9 @@ class VisionMamba(nn.Module):
         x = self.patch_embed(x)  # patch linear embedding
 
         # add the [CLS] token to the embed patch tokens
-        cls_tokens = self.cls_token.expand(B, -1, -1)
-        x = torch.cat((cls_tokens, x), dim=1)
+        if self.if_cls_token:
+            cls_tokens = self.cls_token.expand(B, -1, -1)
+            x = torch.cat((cls_tokens, x), dim=1)
 
         # add positional encoding to each token
         x = x + self.interpolate_pos_encoding(x, w, h)
@@ -882,7 +883,14 @@ class VisionMamba(nn.Module):
         return self.pos_drop(x)
 
 
-    def forward_features(self, x, inference_params=None, if_random_cls_token_position=False, if_random_token_rank=False):
+    def get_intermediate_layers(self, x, n_last_block, inference_params=None, if_random_cls_token_position=False, if_random_token_rank=False):
+        intermediate_output = self.forward_features(x, inference_params,
+                                                    if_random_cls_token_position=if_random_cls_token_position,
+                                                    if_random_token_rank=if_random_token_rank,
+                                                    return_intermediate_output=True)
+        return intermediate_output[-n_last_block: ]
+    def forward_features(self, x, inference_params=None, if_random_cls_token_position=False, if_random_token_rank=False,
+                         return_intermediate_output=False):
         # taken from https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/vision_transformer.py
         # with slight modifications to add the dist_token
         if self.if_abs_pos_embed:
@@ -955,6 +963,7 @@ class VisionMamba(nn.Module):
         # mamba impl
         residual = None
         hidden_states = x
+        intermediate_output = []
         if not self.if_bidirectional:
             for layer in self.layers:
 
@@ -977,6 +986,7 @@ class VisionMamba(nn.Module):
                 hidden_states, residual = layer(
                     hidden_states, residual, inference_params=inference_params
                 )
+                intermediate_output.append(self.norm_f(hidden_states))
         else:
             # get two layers in a single for-loop
             for i in range(len(self.layers) // 2):
@@ -992,14 +1002,17 @@ class VisionMamba(nn.Module):
                     hidden_states.flip([1]), None if residual == None else residual.flip([1]), inference_params=inference_params
                 )
                 hidden_states = hidden_states_f + hidden_states_b.flip([1])
+                intermediate_output.append(self.norm_f(hidden_states))
                 residual = residual_f + residual_b.flip([1])
-
+        if return_intermediate_output:
+            return intermediate_output
         if not self.fused_add_norm:
             if residual is None:
                 residual = hidden_states
             else:
                 residual = residual + self.drop_path(hidden_states)
             hidden_states = self.norm_f(residual.to(dtype=self.norm_f.weight.dtype))
+
         else:
             # Set prenorm=False here since we don't need the residual
             fused_add_norm_fn = rms_norm_fn if isinstance(self.norm_f, RMSNorm) else layer_norm_fn
@@ -1013,6 +1026,8 @@ class VisionMamba(nn.Module):
                 residual_in_fp32=self.residual_in_fp32,
             )
 
+        if self.final_pool_type == 'all':
+            return hidden_states
         # return only cls token if it exists
         if self.if_cls_token:
             if self.use_double_cls_token:
@@ -1030,8 +1045,6 @@ class VisionMamba(nn.Module):
         elif self.final_pool_type == 'mean':
             return hidden_states.mean(dim=1)
         elif self.final_pool_type == 'max':
-            return hidden_states
-        elif self.final_pool_type == 'all':
             return hidden_states
         else:
             raise NotImplementedError

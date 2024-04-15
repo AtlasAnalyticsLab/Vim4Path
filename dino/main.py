@@ -29,14 +29,18 @@ import torch.backends.cudnn as cudnn
 import torch.nn.functional as F
 from torchvision import datasets, transforms
 from torchvision import models as torchvision_models
-
-import utils
-import vision_transformer as vits
-from vision_transformer import DINOHead, VisionTransformer
-from vim.models_mamba import VisionMamba
 import wandb
-from config import configurations  
 from functools import partial
+
+# import utils
+# from vision_transformer import DINOHead, VisionTransformer
+# from vim.models_mamba import VisionMamba
+# from config import configurations
+
+from . import utils
+from .vision_transformer import DINOHead, VisionTransformer
+from .vim.models_mamba import VisionMamba
+from .config import configurations
 
 torchvision_archs = sorted(name for name in torchvision_models.__dict__
     if name.islower() and not name.startswith("__")

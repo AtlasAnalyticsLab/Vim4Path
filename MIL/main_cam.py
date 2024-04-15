@@ -39,6 +39,8 @@ def main(train_dataset, test_dataset, args):
     all_val_auc = []
     all_test_acc = []
     all_val_acc = []
+    all_test_f1 = []
+    all_val_f1 = []
     folds = np.arange(start, end)
     for i in folds:
         seed_torch(args.seed)
@@ -46,17 +48,19 @@ def main(train_dataset, test_dataset, args):
         test_dataset = test_dataset.return_splits(from_id=False, csv_path='splits/test/splits_0.csv')
 
         datasets = (train_dataset, test_dataset, test_dataset)
-        results, test_auc, val_auc, test_acc, val_acc = train(datasets, i, args, embedding_dim)
+        results, test_auc, val_auc, test_acc, val_acc, test_f1, val_f1 = train(datasets, i, args, embedding_dim)
         all_test_auc.append(test_auc)
         all_val_auc.append(val_auc)
         all_test_acc.append(test_acc)
         all_val_acc.append(val_acc)
+        all_test_f1.append(test_f1)
+        all_val_f1.append(val_f1)
         # write results to pkl
         filename = os.path.join(args.results_dir, 'split_{}_results.pkl'.format(i))
         save_pkl(filename, results)
 
-    final_df = pd.DataFrame({'folds': folds, 'test_auc': all_test_auc,
-                             'val_auc': all_val_auc, 'test_acc': all_test_acc, 'val_acc': all_val_acc})
+    final_df = pd.DataFrame({'folds': folds, 'test_auc': all_test_auc, 'val_auc': all_val_auc, 'val_f1': all_val_f1,
+                             'test_acc': all_test_acc, 'val_acc': all_val_acc, 'test_f1': all_test_f1})
 
     if len(folds) != args.k:
         save_name = 'summary_partial_{}_{}.csv'.format(start, end)
@@ -110,6 +114,11 @@ parser.add_argument('--subtyping', action='store_true', default=False,
 parser.add_argument('--bag_weight', type=float, default=0.7,
                     help='clam: weight coefficient for bag-level loss (default: 0.7)')
 parser.add_argument('--B', type=int, default=8, help='numbr of positive/negative patches to sample for clam')
+
+parser.add_argument('--arch', type=str, help='Encoder Architecture to use. ')
+parser.add_argument('--image_size', default=224, type=int, help='Image Size of global views.')
+parser.add_argument("--source_level", type=str)
+parser.add_argument("--target_level", type=str)
 args = parser.parse_args()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -153,12 +162,17 @@ if args.model_type in ['clam_sb', 'clam_mb']:
                      'B': args.B})
 
 args.n_classes = 2
-arch = 'vin-s'
-image_size = 512
-embedding_dim = 1536 if arch.startswith('vit') else 384
-# embedding_dim = 384
-train_dataset = Generic_MIL_Dataset(csv_path=f'../clam_data/{image_size}/{arch}/training/tumor_vs_normal.csv',
-                              data_dir=f'../clam_data/{image_size}/{arch}/training',
+# embedding_dim = 1024
+embedding_map = {'vit-t': 768,
+                 'vim-t': 192,
+                 'vit-s': 1536,
+                 'vim-s': 384,
+                 'vim-s2': 384
+                 }
+embedding_dim = embedding_map[args.arch]
+
+train_dataset = Generic_MIL_Dataset(csv_path=f'../clam_data/{args.image_size}_{args.source_level}at{args.target_level}/{args.arch}/training/tumor_vs_normal.csv',
+                              data_dir=f'../clam_data/{args.image_size}_{args.source_level}at{args.target_level}/{args.arch}/training',
                               shuffle=True,
                               seed=args.seed,
                               print_info=True,
@@ -166,8 +180,8 @@ train_dataset = Generic_MIL_Dataset(csv_path=f'../clam_data/{image_size}/{arch}/
                               patient_strat=False,
                               ignore=[])
 
-test_dataset = Generic_MIL_Dataset(csv_path=f'../clam_data/{image_size}/{arch}/testing/tumor_vs_normal.csv',
-                              data_dir=f'../clam_data/{image_size}/{arch}/testing/',
+test_dataset = Generic_MIL_Dataset(csv_path=f'../clam_data/{args.image_size}_{args.source_level}at{args.target_level}/{args.arch}/testing/tumor_vs_normal.csv',
+                              data_dir=f'../clam_data/{args.image_size}_{args.source_level}at{args.target_level}/{args.arch}/testing/',
                               shuffle=True,
                               seed=args.seed,
                               print_info=True,

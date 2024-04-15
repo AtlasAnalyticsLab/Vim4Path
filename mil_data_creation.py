@@ -280,7 +280,7 @@ if __name__ == '__main__':
     device = torch.device('cuda') if torch.cuda.is_available else torch.device('cpu')
     parser = get_args_parser()
     args = parser.parse_args()
-    args.output_dir = f'clam_data/224_{args.source_level}at{args.target_level}'
+    args.output_dir = f'clam_data/'
     model = get_model()
     process_training(args)
     process_testing(args)

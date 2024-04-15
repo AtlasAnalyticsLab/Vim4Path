@@ -13,6 +13,9 @@ data/
 *pyc
 *out
 *so
+*zip
+*sh
+*pt
 
 dino/causal-conv1d/build/
 checkpoints/
@@ -21,6 +24,9 @@ __pycache__/
 .idea/
 HIPT/
 datasets/
+dataset/
 Vim
 .github
 wandb/
+MIL/results/
+MIL/results_old/

@@ -1,6 +1,6 @@
 configurations = {
     "vim-t": {
-        "img_size": 512,
+        "img_size": 224,
         "patch_size": 16,
         "stride": 16,
         "embed_dim": 192,
@@ -19,8 +19,8 @@ configurations = {
         "use_middle_cls_token": True,
         "bimamba_type": "v2"
     },
-    "vim-s": {
-        "img_size": 512,
+    "vim-t-plus": {
+        "img_size": 224,
         "patch_size": 16,
         "stride": 16,
         "embed_dim": 384,
@@ -39,8 +39,8 @@ configurations = {
         "use_middle_cls_token": True,
         "bimamba_type": "v2"
     },
-    "vim-s2": {
-        "img_size": 512,
+    "vim-s": {
+        "img_size": 224,
         "patch_size": 16,
         "stride": 16,
         "embed_dim": 384,

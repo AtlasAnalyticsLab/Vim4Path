@@ -50,8 +50,8 @@ def get_args_parser():
     parser = argparse.ArgumentParser('DINO', add_help=False)
 
     # Model parameters
-    parser.add_argument('--arch', default='vim-s', type=str,
-        choices=['vim-s', 'vim-s2', 'vit-s', 'vim-t', 'vit-t'], 
+    parser.add_argument('--arch', default='vim-t-plus', type=str,
+        choices=['vim-t', 'vim-t-plus', 'vim-s', 'vit-t', 'vit-s'],
         help="""Name of architecture to train. For quick experiments with ViTs,
         we recommend using vit_tiny or vit_small.""")
     parser.add_argument('--patch_size', default=16, type=int, help="""Size in pixels
@@ -112,8 +112,8 @@ def get_args_parser():
     parser.add_argument('--drop_path_rate', type=float, default=0.1, help="stochastic depth rate")
 
 
-    parser.add_argument('--image_size', default=512, type=int, help='Image Size of global views.')
-    parser.add_argument('--image_size_down', default=224, type=int, help='Image Size of local views.')
+    parser.add_argument('--image_size', default=224, type=int, help='Image Size of global views.')
+    parser.add_argument('--image_size_down', default=96, type=int, help='Image Size of local views.')
     parser.add_argument('--disable_wandb', action='store_true', help='Disable Weights & Biases logging. Enabled by default.')
 
     # Multi-crop parameters

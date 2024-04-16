@@ -27,10 +27,8 @@ def get_args_parser():
     parser = argparse.ArgumentParser('DINO', add_help=False)
 
     # Model parameters
-    parser.add_argument('--arch', default='vim-s', type=str,
-        choices=['vim-s', 'vim-s2', 'vit-s', 'vim-t', 'vit-t'],
-        help="""Name of architecture to train. For quick experiments with ViTs,
-        we recommend using vit_tiny or vit_small.""")
+    parser.add_argument('--arch', default='vim-t-plus', type=str,
+        choices=['vim-t', 'vim-t-plus', 'vim-s', 'vit-t', 'vit-s'])
     parser.add_argument('--patch_size', default=16, type=int, help="""Size in pixels
         of input square patches - default 16 (for 16x16 patches). Using smaller
         values leads to better performance but requires more memory. Applies only

@@ -278,7 +278,8 @@ if __name__ == '__main__':
     parser.add_argument('--avgpool_patchtokens', default=False, type=utils.bool_flag,
         help="""Whether ot not to concatenate the global average pooled features to the [CLS] token.
         We typically set this to False for ViT-Small and to True with ViT-Base.""")
-    parser.add_argument('--arch', default='vit_small', type=str, help='Architecture')
+    parser.add_argument('--arch', default='vim-t-plus', type=str,
+        choices=['vim-t', 'vim-t-plus', 'vim-s', 'vit-t', 'vit-s'])
     parser.add_argument('--patch_size', default=16, type=int, help='Patch resolution of the model.')
     parser.add_argument('--image_size', default=224, type=int, help='Image resolution of the model.')
     parser.add_argument('--pretrained_weights', default='', type=str, help="Path to pretrained weights to evaluate.")

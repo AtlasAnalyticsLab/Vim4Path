@@ -68,31 +68,31 @@ The pretrained weights and the self-supervised logs are provided below.
   </tr>
   <tr>
     <td>ViT-ti</td>
-    <td><a href="">checkpoints</a></td>
-    <td><a href="">pretraining log</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/9rmze3a0u0rmfvv4uogby/AN25BiCsNh0o3rnnA9dYmNQ?dl=0&e=1&preview=checkpoint.pth&rlkey=ufc80pc2spzc98cn4atrh26jl">checkpoints</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/9rmze3a0u0rmfvv4uogby/AN25BiCsNh0o3rnnA9dYmNQ?dl=0&e=1&preview=log.txt&rlkey=ufc80pc2spzc98cn4atrh26jl">pretraining log</a></td>
   </tr>
   <tr>
     <td>ViT-s</td>
-    <td><a href="">checkpoints</a></td>
-    <td><a href="">pretraining log</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/z1w40ypwbsyqlkywevm5t/AFAnxqw0VPnRmf8c1KoulKU?dl=0&e=1&preview=checkpoint.pth&rlkey=vq3xq6dj4hmtrv1qeah1cnmlg">checkpoints</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/z1w40ypwbsyqlkywevm5t/AFAnxqw0VPnRmf8c1KoulKU?dl=0&e=1&preview=log.txt&rlkey=vq3xq6dj4hmtrv1qeah1cnmlg">pretraining log</a></td>
   </tr>
 
   <tr>
     <td>Vim-ti</td>
-    <td><a href="">checkpoints</a></td>
-    <td><a href="">pretraining log</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/4q86hsyhxqf0s30sznsi7/AD3K7kL0D9tMCEw2s6GzOGs?dl=0&e=1&preview=checkpoint.pth&rlkey=57wabu98dei6x60u6dxhe33vg">checkpoints</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/4q86hsyhxqf0s30sznsi7/AD3K7kL0D9tMCEw2s6GzOGs?dl=0&e=1&preview=log.txt&rlkey=57wabu98dei6x60u6dxhe33vg">pretraining log</a></td>
   </tr>
 
   <tr>
     <td>Vim-ti-plus</td>
-    <td><a href="">checkpoints</a></td>
-    <td><a href="">pretraining log</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/93486j0plk4zz185ncmio/AEeLYVl1Cv92ucHYnc5zAXc?dl=0&e=1&preview=checkpoint.pth&rlkey=2scjj7ekkceii4iepexg0huvx">checkpoints</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/93486j0plk4zz185ncmio/AEeLYVl1Cv92ucHYnc5zAXc?dl=0&e=1&preview=log.txt&rlkey=2scjj7ekkceii4iepexg0huvx">pretraining log</a></td>
   </tr>
 
   <tr>
     <td>Vim-s</td>
-    <td><a href="">checkpoints</a></td>
-    <td><a href="">pretraining log</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/itlxf4cqyvxrbp7kxh43t/ADEuaFPA4Fv5Le96B2T1YZk?dl=0&e=1&preview=checkpoint.pth&rlkey=tf9du6jleuvymfcbhsi67iuf2">checkpoints</a></td>
+    <td><a href="https://www.dropbox.com/scl/fo/itlxf4cqyvxrbp7kxh43t/ADEuaFPA4Fv5Le96B2T1YZk?dl=0&e=1&preview=log.txt&rlkey=tf9du6jleuvymfcbhsi67iuf2">pretraining log</a></td>
   </tr>
 
 </table>

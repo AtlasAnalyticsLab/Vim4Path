@@ -1,6 +1,10 @@
 # VIM4Path
 PyTorch Implementation of VIM4Path paper  and pretrained weights.  
 [[`arXiv`](https://arxiv.org/pdf/2404.13222.pdf)] 
+
+![Vim4Path](Vim4Path.webp)
+
+
 ## Installation
 
 Use the installation guide on  [Vision Mamba Repo](https://github.com/hustvl/vim).

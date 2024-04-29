@@ -1,15 +1,20 @@
 # VIM4Path
-PyTorch Implementation of VIM4Path paper  and pretrained weights.  
-[[`arXiv`](https://arxiv.org/pdf/2404.13222.pdf)] 
+Vim4Path: Self-Supervised Vision Mamba for Histopathology Images, CVPR 2024.
 
-![Vim4Path](Vim4Path.webp)
+**Abstract,**  *Representation learning from Gigapixel Whole Slide Images (WSI) poses a significant challenge in computational pathology due to the complicated nature of tissue structures and the scarcity of labeled data. Multi-instance learning methods have addressed this challenge, leveraging image patches to classify slides utilizing pretrained models using Self-Supervised Learning (SSL) approaches. The performance of both SSL and MIL methods relies on the architecture of the feature encoder. This paper proposes leveraging the Vision Mamba (Vim) architecture, inspired by state space models, within the DINO framework for representation learning in computational pathology. We evaluate the performance of Vim against Vision Transformers (ViT) on the Camelyon16 dataset for both patch-level and slide-level classification. Our findings highlight Vim’s enhanced performance compared to ViT, particularly at smaller scales, where Vim achieves an 8.21 increase in ROC AUC for models of similar size. An explainability analysis further highlights Vim’s capabilities, which reveals that Vim uniquely emulates the pathologist workflow—unlike ViT. This alignment with human expert analysis highlights Vim’s potential in practical diagnostic settings and contributes significantly to developing effective representation-learning algorithms in computational pathology.*
+
+[[`arXiv`](https://arxiv.org/pdf/2404.13222.pdf)] | [[`Cite`]](#citation) 
+
+
+![Vim4Path](media/Vim4Path.webp)
+
+
 
 
 ## Installation
 
 Use the installation guide on  [Vision Mamba Repo](https://github.com/hustvl/vim).
 Also, need to install packages such as shapely, openslide, opencv, h5py, and lxml for data processing. 
-
 
 ## Dataset
 
@@ -64,37 +69,43 @@ python main_cam.py  --image_size 224 --arch vim-s --source_level 10 --target_lev
 
 
 # Weights
-The pretrained weights and the self-supervised logs are provided below.
+The pretrained (no labels) weights and the self-supervised logs are provided below.
 <table>
   <tr>
     <td>arch</td>
+    <th>ROC AUC <br> (Cam16)</th>
     <th colspan="2">download</th>
   </tr>
   <tr>
     <td>ViT-ti</td>
+    <th> 87.60 </th>
     <td><a href="https://www.dropbox.com/scl/fo/9rmze3a0u0rmfvv4uogby/AN25BiCsNh0o3rnnA9dYmNQ?dl=0&e=1&preview=checkpoint.pth&rlkey=ufc80pc2spzc98cn4atrh26jl">checkpoints</a></td>
     <td><a href="https://www.dropbox.com/scl/fo/9rmze3a0u0rmfvv4uogby/AN25BiCsNh0o3rnnA9dYmNQ?dl=0&e=1&preview=log.txt&rlkey=ufc80pc2spzc98cn4atrh26jl">pretraining log</a></td>
   </tr>
   <tr>
     <td>ViT-s</td>
+    <th> 96.76 </th>
     <td><a href="https://www.dropbox.com/scl/fo/z1w40ypwbsyqlkywevm5t/AFAnxqw0VPnRmf8c1KoulKU?dl=0&e=1&preview=checkpoint.pth&rlkey=vq3xq6dj4hmtrv1qeah1cnmlg">checkpoints</a></td>
     <td><a href="https://www.dropbox.com/scl/fo/z1w40ypwbsyqlkywevm5t/AFAnxqw0VPnRmf8c1KoulKU?dl=0&e=1&preview=log.txt&rlkey=vq3xq6dj4hmtrv1qeah1cnmlg">pretraining log</a></td>
   </tr>
 
   <tr>
     <td>Vim-ti</td>
+    <th> 95.81 </th>
     <td><a href="https://www.dropbox.com/scl/fo/4q86hsyhxqf0s30sznsi7/AD3K7kL0D9tMCEw2s6GzOGs?dl=0&e=1&preview=checkpoint.pth&rlkey=57wabu98dei6x60u6dxhe33vg">checkpoints</a></td>
     <td><a href="https://www.dropbox.com/scl/fo/4q86hsyhxqf0s30sznsi7/AD3K7kL0D9tMCEw2s6GzOGs?dl=0&e=1&preview=log.txt&rlkey=57wabu98dei6x60u6dxhe33vg">pretraining log</a></td>
   </tr>
 
   <tr>
     <td>Vim-ti-plus</td>
+    <th> 97.39 </th>
     <td><a href="https://www.dropbox.com/scl/fo/93486j0plk4zz185ncmio/AEeLYVl1Cv92ucHYnc5zAXc?dl=0&e=1&preview=checkpoint.pth&rlkey=2scjj7ekkceii4iepexg0huvx">checkpoints</a></td>
     <td><a href="https://www.dropbox.com/scl/fo/93486j0plk4zz185ncmio/AEeLYVl1Cv92ucHYnc5zAXc?dl=0&e=1&preview=log.txt&rlkey=2scjj7ekkceii4iepexg0huvx">pretraining log</a></td>
   </tr>
 
   <tr>
     <td>Vim-s</td>
+    <th> 98.85 </th>
     <td><a href="https://www.dropbox.com/scl/fo/itlxf4cqyvxrbp7kxh43t/ADEuaFPA4Fv5Le96B2T1YZk?dl=0&e=1&preview=checkpoint.pth&rlkey=tf9du6jleuvymfcbhsi67iuf2">checkpoints</a></td>
     <td><a href="https://www.dropbox.com/scl/fo/itlxf4cqyvxrbp7kxh43t/ADEuaFPA4Fv5Le96B2T1YZk?dl=0&e=1&preview=log.txt&rlkey=tf9du6jleuvymfcbhsi67iuf2">pretraining log</a></td>
   </tr>
@@ -102,5 +113,12 @@ The pretrained weights and the self-supervised logs are provided below.
 </table>
 
 ## Citation
-If you find this repository useful, please consider giving a star and citation:
+If you find this repository useful, please consider giving a star and citation (arxiv preprint):
+```
+@article{nasiri2024vim4path,
+  title={Vim4Path: Self-Supervised Vision Mamba for Histopathology Images},
+  author={Nasiri-Sarvi, Ali and Trinh, Vincent Quoc-Huy and Rivaz, Hassan and Hosseini, Mahdi S},
+  journal={arXiv preprint arXiv:2404.13222},
+  year={2024}
+}
 ```

@@ -165,9 +165,9 @@ args.n_classes = 2
 # embedding_dim = 1024
 embedding_map = {'vit-t': 768,
                  'vim-t': 192,
+                 'vim-t-plus': 384,
                  'vit-s': 1536,
-                 'vim-s': 384,
-                 'vim-s2': 384
+                 'vim-s': 384
                  }
 embedding_dim = embedding_map[args.arch]
 

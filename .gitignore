@@ -23,7 +23,7 @@ checkpoints/
 __pycache__/
 .idea/
 HIPT/
-datasets/
+#datasets/
 dataset/
 Vim
 .github

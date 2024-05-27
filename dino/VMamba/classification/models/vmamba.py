@@ -1177,6 +1177,7 @@ class VSSM(nn.Module):
             # =========================
             posembed=False,
             imgsize=224,
+            return_features=False,
             **kwargs,
     ):
         super().__init__()
@@ -1187,6 +1188,8 @@ class VSSM(nn.Module):
             dims = [int(dims * 2 ** i_layer) for i_layer in range(self.num_layers)]
         self.num_features = dims[-1]
         self.dims = dims
+        self.embed_dim = dims[-1]
+        self.return_features = return_features
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
 
         _NORMLAYERS = dict(
@@ -1255,13 +1258,19 @@ class VSSM(nn.Module):
                 gmlp=gmlp,
             ))
 
-        self.classifier = nn.Sequential(OrderedDict(
-            norm=norm_layer(self.num_features),  # B,H,W,C
-            permute=(Permute(0, 3, 1, 2) if not self.channel_first else nn.Identity()),
-            avgpool=nn.AdaptiveAvgPool2d(1),
-            flatten=nn.Flatten(1),
-            head=nn.Linear(self.num_features, num_classes),
-        ))
+        # self.classifier = nn.Sequential(OrderedDict(
+        #     norm=norm_layer(self.num_features), # B,H,W,C
+        #     permute=(Permute(0, 3, 1, 2) if not self.channel_first else nn.Identity()),
+        #     avgpool=nn.AdaptiveAvgPool2d(1),
+        #     flatten=nn.Flatten(1),
+        #     head=nn.Linear(self.num_features, num_classes),
+        # ))
+
+        # Components of the classifier
+        self.norm_layer = norm_layer(self.num_features)
+        self.permute = Permute(0, 3, 1, 2) if not self.channel_first else nn.Identity()
+        self.avgpool = nn.AdaptiveAvgPool2d(1)
+        self.head = nn.Linear(self.num_features, num_classes)
 
         self.apply(self._init_weights)
 
@@ -1397,12 +1406,29 @@ class VSSM(nn.Module):
     def forward(self, x: torch.Tensor):
         x = self.patch_embed(x)
         if self.pos_embed is not None:
-            pos_embed = self.pos_embed.permute(0, 2, 3, 1) if not self.channel_first else self.pos_embed
+            pos_embed = self.pos_embed.permute(0, 2, 3, 1).contiguous() if not self.channel_first else self.pos_embed
             x = x + pos_embed
         for layer in self.layers:
             x = layer(x)
-        x = self.classifier(x)
-        return x
+        # x = self.classifier(x)
+
+        # # Normalize and permute if necessary
+        x = self.norm_layer(x)
+        x = self.permute(x).contiguous()
+
+        # Average pooling
+        x = self.avgpool(x)
+
+        # Flatten the output
+        x = torch.flatten(x, 1)  # Using torch.flatten directly
+
+        if self.return_features and False:
+            # Return the flattened features without the final linear layer
+            return x
+        else:
+            # Continue to the final linear classification layer
+            x = self.head(x)
+            return x
 
     def flops(self, shape=(3, 224, 224), verbose=True):
         # shape = self.__input_shape__[1:]
@@ -1473,8 +1499,8 @@ class VSSM(nn.Module):
             for j in range(100):
                 change_name(f"layers.{i}.blocks.{j}.ln_1", f"layers.{i}.blocks.{j}.norm")
                 change_name(f"layers.{i}.blocks.{j}.self_attention", f"layers.{i}.blocks.{j}.op")
-        change_name("norm", "classifier.norm")
-        change_name("head", "classifier.head")
+        # change_name("norm", "classifier.norm")
+        # change_name("head", "classifier.head")
 
         return super()._load_from_state_dict(state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys,
                                              error_msgs)

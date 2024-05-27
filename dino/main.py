@@ -31,16 +31,17 @@ from torchvision import datasets, transforms
 from torchvision import models as torchvision_models
 import wandb
 from functools import partial
+from VMamba.classification.models.vmamba import VSSM
 
 # import utils
 # from vision_transformer import DINOHead, VisionTransformer
 # from vim.models_mamba import VisionMamba
 # from config import configurations
 
-from . import utils
-from .vision_transformer import DINOHead, VisionTransformer
-from .vim.models_mamba import VisionMamba
-from .config import configurations
+import utils
+from vision_transformer import DINOHead, VisionTransformer
+from vim.models_mamba import VisionMamba
+from config import configurations
 
 torchvision_archs = sorted(name for name in torchvision_models.__dict__
     if name.islower() and not name.startswith("__")
@@ -51,7 +52,7 @@ def get_args_parser():
 
     # Model parameters
     parser.add_argument('--arch', default='vim-t-plus', type=str,
-        choices=['vim-t', 'vim-t-plus', 'vim-s', 'vit-t', 'vit-s'])
+        choices=['vim-t', 'vim-t-plus', 'vim-s', 'vit-t', 'vit-s', 'vmamba-t', 'vmamba-s', 'vmamba-b'])
     parser.add_argument('--patch_size', default=16, type=int, help="""Size in pixels
         of input square patches - default 16 (for 16x16 patches). Using smaller
         values leads to better performance but requires more memory. Applies only
@@ -194,6 +195,9 @@ def train_dino(args):
         elif args.arch.startswith('vit'):
             student = VisionTransformer(**config)
             teacher = VisionTransformer(**teacher_config)
+        elif args.arch.startswith('vmamba'):
+            student = VSSM(return_features=True, **config)
+            teacher = VSSM(return_features=True, **teacher_config)
         embed_dim = student.embed_dim
         print('EMBEDDED DIM:', embed_dim)
     else:

@@ -12,10 +12,29 @@ Vim4Path: Self-Supervised Vision Mamba for Histopathology Images, CVPR 2024.
 
 
 ## Installation
+We use cuda 11.8 for our codes. Use the following list of commands to install required libraries. 
 
-Use the installation guide on  [Vision Mamba Repo](https://github.com/hustvl/vim).
-Also, need to install packages such as shapely, openslide, opencv, h5py, and lxml for data processing. 
+```commandline
+pip install torch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 --index-url https://download.pytorch.org/whl/cu118
+cd dino/causal-conv1d
+pip install -e .
+cd ../mamba-1p1p1
+pip install -e .
+pip install shapely
+pip install openslide-python
+pip install opencv-python
+pip install h5py
+pip install lxml
+```
 
+We are also working on adding [VMamba](https://github.com/MzeroMiko/VMamba?tab=readme-ov-file) to our pipeline.
+This architecture isn't supported yet. If you wish to not install it, please comment the related imports in the main.py file within dino folder.
+To install this model, use the following commands:  
+```commandline
+cd dino/VMamba
+pip install -r requirements.txt
+cd kernels/selective_scan && pip install .
+```
 ## Dataset
 
 #### Dataset Source

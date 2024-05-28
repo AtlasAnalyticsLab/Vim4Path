@@ -1422,7 +1422,7 @@ class VSSM(nn.Module):
         # Flatten the output
         x = torch.flatten(x, 1)  # Using torch.flatten directly
 
-        if self.return_features and False:
+        if self.return_features:
             # Return the flattened features without the final linear layer
             return x
         else:

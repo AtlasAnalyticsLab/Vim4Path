@@ -183,7 +183,7 @@ def train_dino(args):
         config['patch_size'] = args.patch_size
         config['num_classes'] = args.num_classes
         if not args.disable_wandb and args.gpu==0:
-            wandb.config.update(config)
+            wandb.config.update(config, allow_val_change=True)
 
         if 'norm_layer' in config and config['norm_layer'] == "nn.LayerNorm":
             config['norm_layer'] = partial(nn.LayerNorm, eps=config['eps'])

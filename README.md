@@ -61,9 +61,9 @@ python -m torch.distributed.launch --nproc_per_node=4 main.py --data_path patch_
 
 
 ## Patch-Level Evaluation 
-You can use the following command to evaluate each model's performance on extracted patch-level images (using camelyon16_extraction.ipynb). We use batch_size of 64 and train for 20 epochs since all methods tend to overfit after this number of epochs. 
+You can use the following command to evaluate each model's performance on extracted patch-level images (using camelyon16_extraction.ipynb). We use batch_size of 64 and train for 20 epochs since all methods tend to overfit after this number of epochs. For generating the balanced dataset, use ''camelyon16_extraction.ipynb''. 
 ```python
-python -m torch.distributed.launch --nproc_per_node=1 eval_linear.py --output_dir checkpoints/camelyon16_224_10x/vim-s/eval_linear --train_data_path path_to_balanced_pcam10x_data --val_data_path /data2/projects/VIM4Path/datasets/Camelyon16/Cam16_Balanced/Balanced/224_5x/test/ --pretrained_weights checkpoints/camelyon16_224_10x/vim-s/checkpoint.pth --arc vim-s  --image_size 224 --epochs 20  --batch_size 64 --
+python -m torch.distributed.launch --nproc_per_node=1 eval_linear.py --output_dir checkpoints/camelyon16_224_10x/vim-s/eval_linear --train_data_path path_to_balanced_pcam10x_train_data --val_data_path path_to_balanced_pcam10x_test_data --pretrained_weights checkpoints/camelyon16_224_10x/vim-s/checkpoint.pth --arc vim-s  --image_size 224 --epochs 20  --batch_size 64 --
 disable_wand
 ```
 

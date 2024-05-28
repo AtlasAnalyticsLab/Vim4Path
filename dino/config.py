@@ -96,7 +96,7 @@ configurations = {
     "vmamba-t": {
             "patch_size": 4,
             "in_chans": 3,
-            "num_classes": 3,
+            "num_classes": 2,
             "depths": [2, 2, 5, 2],
             "dims": 96,
             "ssm_d_state": 1,
@@ -123,9 +123,9 @@ configurations = {
             "imgsize": 224
         },
     "vmamba-s": {
-        "patch_size": 4,
+        "patch_size": 16,
         "in_chans": 3,
-        "num_classes": 3,
+        "num_classes": 2,
         "depths": [2, 2, 15, 2],
         "dims": 96,
         "ssm_d_state": 1,
@@ -152,9 +152,9 @@ configurations = {
         "imgsize": 224
     },
     "vmamba-b": {
-        "patch_size": 4,
+        "patch_size": 16,
         "in_chans": 3,
-        "num_classes": 3,
+        "num_classes": 2,
         "depths": [2, 2, 15, 2],
         "dims": 128,
         "ssm_d_state": 1,

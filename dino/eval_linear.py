@@ -24,10 +24,11 @@ from torchvision import datasets
 from torchvision import transforms as pth_transforms
 from torchvision import models as torchvision_models
 
-from . import utils
-from .config import configurations
-from .vision_transformer import VisionTransformer
-from .vim.models_mamba import VisionMamba
+import utils
+from config import configurations
+from vision_transformer import VisionTransformer
+from vim.models_mamba import VisionMamba
+from VMamba.classification.models.vmamba import VSSM
 
 import wandb
 from functools import partial
@@ -53,7 +54,7 @@ def eval_linear(args):
         config['patch_size'] = args.patch_size
         config['num_classes'] = args.num_labels
         if not args.disable_wandb and args.gpu==0:
-            wandb.config.update(config)
+            wandb.config.update(config, allow_val_change=True)
 
         if 'norm_layer' in config and config['norm_layer'] == "nn.LayerNorm":
             config['norm_layer'] = partial(nn.LayerNorm, eps=config['eps'])
@@ -64,9 +65,12 @@ def eval_linear(args):
         elif args.arch.startswith('vit'):
             model = VisionTransformer(**config)
             embed_dim = model.embed_dim * (args.n_last_blocks + int(args.avgpool_patchtokens))
+        elif args.arch.startswith('vmamba'):
+            model = VSSM(return_features=True, **config)
+            embed_dim = model.embed_dim
         print('EMBEDDED DIM:', embed_dim)
     else:
-        print(f"Unknown architecture: {args.arch}")
+        raise Exception(f"Unknown architecture: {args.arch}")
         
     model.cuda()
     model.eval()

@@ -16,10 +16,9 @@ We use cuda 11.8 for our codes. Use the following list of commands to install re
 
 ```commandline
 pip install torch==2.1.1 torchvision==0.16.1 torchaudio==2.1.1 --index-url https://download.pytorch.org/whl/cu118
-cd dino/causal-conv1d
-pip install -e .
 cd ../mamba-1p1p1
 pip install -e .
+pip install causal_conv1d==1.1.0
 pip install shapely
 pip install openslide-python
 pip install opencv-python

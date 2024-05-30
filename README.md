@@ -75,7 +75,7 @@ disable_wand
 ```
 
 ## Slide-Level Evaluation 
-For slide-level classification you can use the following command to get the features for slide at 10x using the pretrained model at 10x. 
+For slide-level classification you can use the following command to get the features for slide at 10x using the pretrained model at 10x. You have to change the path in the scripts based on your Camelyon16 dataset location. 
 ```python
 python mil_data_creation.py --image_size 224 --arch vim-s --pretrained_weights dino/checkpoints/camelyon16_224_10x/vim-s_224-96/checkpoint.pth --source_level 10 --target_level 10
 ```

@@ -25,6 +25,7 @@ pip install openslide-python
 pip install opencv-python
 pip install h5py
 pip install lxml
+pip install timm
 ```
 
 ## Dataset

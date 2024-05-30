@@ -51,7 +51,6 @@ python extract_patches.py --raw_data_folder path_to_raw_WSIs --wsi_extension tif
 
 Note, that there are some issues (still unfixed) with extract_patches.py where a few of the extracted images are truncated. We use the following script to remove those images. 
 ```python
-cd preprocess
 python check_images.py --dir path_to_saved_patches
 ```
 

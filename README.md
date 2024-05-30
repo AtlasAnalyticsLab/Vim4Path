@@ -49,7 +49,15 @@ Use the extract_patches.py script for pretraining image extraction with the foll
 python extract_patches.py --raw_data_folder path_to_raw_WSIs --wsi_extension tif --input_folder path_to_h5_files --output_folder path_to_save_patches
 ```
 
-To extract patches for patch-level classification use the camelyon16_extraction.ipynb.
+Note, that there are some issues (still unfixed) with extract_patches.py where a few of the extracted images are truncated. We use the following script to remove those images. 
+```python
+cd preprocess
+python check_images.py --dir path_to_saved_patches
+```
+
+These scripts would create patches for pretraining. Although the images are divided into two folders based on the class, those folders cannot be used for patch-level classification (since the images for the tumor class are extracted from all regions of the slide). 
+
+To extract patches for patch-level classification use the camelyon16_extraction.ipynb, which allows extracting images for tumor class from the ROI region. a
 
 ## Pretraining
 You should use the dino folder for pretraining. 

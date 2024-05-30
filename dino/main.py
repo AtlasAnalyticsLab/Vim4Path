@@ -32,15 +32,15 @@ from torchvision import models as torchvision_models
 import wandb
 from functools import partial
 
-# import utils
-# from vision_transformer import DINOHead, VisionTransformer
-# from vim.models_mamba import VisionMamba
-# from config import configurations
+import utils
+from vision_transformer import DINOHead, VisionTransformer
+from vim.models_mamba import VisionMamba
+from config import configurations
 
-from . import utils
-from .vision_transformer import DINOHead, VisionTransformer
-from .vim.models_mamba import VisionMamba
-from .config import configurations
+# from . import utils
+# from .vision_transformer import DINOHead, VisionTransformer
+# from .vim.models_mamba import VisionMamba
+# from .config import configurations
 
 torchvision_archs = sorted(name for name in torchvision_models.__dict__
     if name.islower() and not name.startswith("__")

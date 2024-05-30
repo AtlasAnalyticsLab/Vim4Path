@@ -1,6 +1,7 @@
 import os
 from PIL import Image, ImageFile
 from tqdm import tqdm
+import argparse
 
 def check_and_remove_images(directory):
     corrupted_count = 0
@@ -18,7 +19,15 @@ def check_and_remove_images(directory):
                 corrupted_count += 1
     return corrupted_count
 
-# The path to the directory containing your images
-directory_path = '/home/a_n29343/CHUM/VIM4Path/datasets/CHUM/output_vim512_small/'
-corrupted_images_count = check_and_remove_images(directory_path)
-print(f'Number of corrupted images removed: {corrupted_images_count}')
+
+def main():
+    parser = argparse.ArgumentParser(description="Check and remove corrupted images in a directory")
+    parser.add_argument('--dir', type=str, help='The path to the directory containing the images')
+    
+    args = parser.parse_args()
+    
+    corrupted_images_count = check_and_remove_images(args.dir)
+    print(f'Number of corrupted images removed: {corrupted_images_count}')
+
+if __name__ == '__main__':
+    main()

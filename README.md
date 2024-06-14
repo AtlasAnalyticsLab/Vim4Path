@@ -133,10 +133,12 @@ The pretrained (no labels) weights and the self-supervised logs are provided bel
 ## Citation
 If you find this repository useful, please consider giving a star and citation (arxiv preprint):
 ```
-@article{nasiri2024vim4path,
-  title={Vim4Path: Self-Supervised Vision Mamba for Histopathology Images},
-  author={Nasiri-Sarvi, Ali and Trinh, Vincent Quoc-Huy and Rivaz, Hassan and Hosseini, Mahdi S},
-  journal={arXiv preprint arXiv:2404.13222},
-  year={2024}
+@InProceedings{Nasiri-Sarvi_2024_CVPR,
+    author = {Nasiri-Sarvi, Ali and Trinh, Vincent Quoc-Huy and Rivaz, Hassan and Hosseini, Mahdi S.},
+    title = {Vim4Path: Self-Supervised Vision Mamba for Histopathology Images},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+    month = {June},
+    year = {2024},
+    pages = {6894-6903}
 }
 ```

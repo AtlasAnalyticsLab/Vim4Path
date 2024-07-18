@@ -34,7 +34,7 @@ Camelyon16 WSI images can be downloaded from the following FTP site:
 [CAMELYON16 Dataset FTP](https://ftp.cngb.org/pub/gigadb/pub/10.5524/100001_101000/100439/CAMELYON16/)
 
 ### Data processing 
-You should use the preprocess folder where we integrated [CLAM](https://github.com/mahmoodlab/CLAM) preprocessing code. 
+You should use the preprocess folder where we integrated [CLAM](https://github.com/mahmoodlab/CLAM) preprocessing code. You should also cite their work if you use the preprocessing pipeline. 
 
 
 To create patches at 10x zooming level, we can use the following commands:

@@ -131,7 +131,7 @@ The pretrained (no labels) weights and the self-supervised logs are provided bel
 </table>
 
 ## Citation
-If you find this repository useful, please consider giving a star and citation (arxiv preprint):
+If you find this repository useful, please consider giving a star and citation:
 ```
 @InProceedings{Nasiri-Sarvi_2024_CVPR,
     author = {Nasiri-Sarvi, Ali and Trinh, Vincent Quoc-Huy and Rivaz, Hassan and Hosseini, Mahdi S.},
